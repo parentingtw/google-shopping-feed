@@ -144,12 +144,16 @@ class Item
     /**
      * @param $description
      */
-    public function description($description)
+    public function description($description, string $encoding = '')
     {
+        if (empty($encoding)) {
+            $encoding = mb_internal_encoding();
+        }
+
         $description = preg_replace( "#<iframe[^>]+>[^<]?</iframe>#is", '', $description );
         $node = new Node('description');
         $description = $this->safeCharEncodeText($description);
-        $this->nodes['description'] = $node->value(substr($description, 0, 5000))->_namespace($this->namespace)->addCdata();
+        $this->nodes['description'] = $node->value(mb_substr($description, 0, 5000, $encoding))->_namespace($this->namespace)->addCdata();
     }
 
     /**
